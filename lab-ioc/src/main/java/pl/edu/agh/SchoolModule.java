@@ -8,10 +8,16 @@ import pl.edu.agh.school.persistence.SerializablePersistenceManager;
 
 public class SchoolModule extends AbstractModule {
 
-    @Provides
-    public IPersistenceManager providePersistenceManager(SerializablePersistenceManager persistenceManager){
-        return persistenceManager;
+    @Override
+    protected  void configure() {
+        bind(IPersistenceManager.class).to(SerializablePersistenceManager.class);
     }
+
+// alternative way using @Provides method
+//    @Provides
+//    public IPersistenceManager providePersistenceManager(SerializablePersistenceManager persistenceManager){
+//        return persistenceManager;
+//    }
 
     @Provides
     @Named("classesStorage")
