@@ -73,6 +73,18 @@ public class PhotoDownloader {
             }
         });
     }
+
+    public Observable<Photo> searchForPhotos(List<String> searchQueries){
+        List<Observable<Photo>> observables = new ArrayList<>();
+        for (String query : searchQueries){
+            Observable<Photo> photoObservable = searchForPhotos(query)
+                    .subscribeOn(Schedulers.io()); // rownolegle pobieranie dla wielu zapytan
+            observables.add(photoObservable);
+        }
+        return Observable.merge(observables);
+    };
+
+
     private Photo getPhoto(String photoUrl) throws IOException {
         log.info("Downloading... " + photoUrl);
         byte[] photoData = downloadPhoto(photoUrl);
