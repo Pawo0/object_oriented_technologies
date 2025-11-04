@@ -40,20 +40,39 @@ public class PhotoDownloader {
         ).map(this::getPhoto);
     }
 
-    public List<Photo> searchForPhotos(String searchQuery) throws IOException, InterruptedException {
-        List<Photo> photos = new ArrayList<>();
-        List<String> photoUrls = GoogleSearchDriver.searchForImages(searchQuery);
+//    public List<Photo> searchForPhotos(String searchQuery) throws IOException, InterruptedException {
+//        List<Photo> photos = new ArrayList<>();
+//        List<String> photoUrls = GoogleSearchDriver.searchForImages(searchQuery);
+//
+//        for (String photoUrl : photoUrls) {
+//            try {
+//                photos.add(getPhoto(photoUrl));
+//            } catch (IOException e) {
+//                log.log(Level.WARNING, "Could not download a photo", e);
+//            }
+//        }
+//        return photos;
+//    }
 
-        for (String photoUrl : photoUrls) {
-            try {
-                photos.add(getPhoto(photoUrl));
-            } catch (IOException e) {
-                log.log(Level.WARNING, "Could not download a photo", e);
+    public Observable<Photo> searchForPhotos(String searchQuery){
+        return Observable.create(observer ->{
+            try{
+                List<String> photoUrls = GoogleSearchDriver.searchForImages(searchQuery);
+                for (String photoUrl : photoUrls){
+                    if (observer.isDisposed()) {
+                        return;
+                    }
+                    try{
+                        observer.onNext(getPhoto(photoUrl));
+                    } catch (IOException e){
+                        log.log(Level.WARNING, "Could not download a photo", e);
+                    }
+                }
+            } catch (IOException | InterruptedException e){
+                observer.onError(e);
             }
-        }
-        return photos;
+        });
     }
-
     private Photo getPhoto(String photoUrl) throws IOException {
         log.info("Downloading... " + photoUrl);
         byte[] photoData = downloadPhoto(photoUrl);

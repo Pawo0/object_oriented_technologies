@@ -44,7 +44,9 @@ public class PhotoCrawler {
     }
 
     public void downloadPhotosForQuery(String query) throws IOException {
-        // TODO Implement me :(
+        photoDownloader.searchForPhotos(query).subscribe(photoSerializer::savePhoto,
+                error -> log.log(Level.SEVERE, "Error downloading photos for query: " + query, error));
+
     }
 
     public void downloadPhotosForMultipleQueries(List<String> queries) {
