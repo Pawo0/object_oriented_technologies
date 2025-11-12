@@ -1,7 +1,9 @@
 package app;
 
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import model.Photo;
+import model.PhotoSize;
 import util.PhotoDownloader;
 import util.PhotoProcessor;
 import util.PhotoSerializer;
@@ -9,6 +11,7 @@ import util.PhotoSerializer;
 import javax.xml.transform.Transformer;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,18 +49,37 @@ public class PhotoCrawler {
     }
 
     public void downloadPhotosForQuery(String query) throws IOException {
-        photoDownloader.searchForPhotos(query).subscribe(photoSerializer::savePhoto,
-                error -> log.log(Level.SEVERE, "Error downloading photos for query: " + query, error));
+//        photoDownloader.searchForPhotos(query).subscribe(photoSerializer::savePhoto,
+//                error -> log.log(Level.SEVERE, "Error downloading photos for query: " + query, error));
+        downloadProcessAndSavePhotos(photoDownloader.searchForPhotos(query));
     }
 
     public void downloadPhotosForMultipleQueries(List<String> queries) {
-        photoDownloader.searchForPhotos(queries).subscribe(photoSerializer::savePhoto,
-                error -> log.log(Level.SEVERE, "Error downloading photos for query: " + queries, error));
+//        photoDownloader.searchForPhotos(queries).subscribe(photoSerializer::savePhoto,
+//                error -> log.log(Level.SEVERE, "Error downloading photos for query: " + queries, error));
+        downloadProcessAndSavePhotos(photoDownloader.searchForPhotos(queries));
     }
 
-    public void processPhotos(Observable<Photo> photos) {
-        photoProcessor.processPhotos(photos).subscribe(photoSerializer::savePhoto,
-                error -> log.log(Level.SEVERE, "Error processing photos", error));
+
+    private void downloadProcessAndSavePhotos(Observable<Photo> photoObservable) {
+        photoObservable.compose(this::processPhotos)
+                .subscribe(photoSerializer::savePhoto,
+                        e -> log.log(Level.WARNING, "Could not download a photo", e)
+                );
+    }
+
+    private Observable<Photo> processPhotos(Observable<Photo> photoObservable) {
+        return photoObservable
+                .filter(photoProcessor::isPhotoValid)
+                .groupBy(PhotoSize::resolve)
+                .flatMap(
+                        group -> group.getKey() == PhotoSize.LARGE ?
+                                group
+                                        .observeOn(Schedulers.computation())
+                                        .map(photoProcessor::convertToMiniature) :
+                                group
+                                        .buffer(5, TimeUnit.SECONDS)
+                                        .flatMapIterable(o -> o));
     }
 
 

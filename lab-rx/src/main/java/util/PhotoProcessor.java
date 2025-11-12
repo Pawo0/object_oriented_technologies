@@ -27,31 +27,6 @@ public class PhotoProcessor {
     }
 
 
-//    public Observable<Photo> processPhotos(Observable<Photo> photos) {
-//        return photos
-//                .filter(this::isPhotoValid)
-//                .map(photo -> {
-//                    try {
-//                        return convertToMiniature(photo);
-//                    } catch (IOException e) {
-//                        log.warning("Error processing photo: " + photo.getId());
-//                        return photo;
-//                    }
-//                });
-//    }
-
-    public Observable<Photo> processPhotos(Observable<Photo> photos){
-        return photos.filter(photo -> isPhotoValid(photo)).map(photo -> {
-            try{
-                return convertToMiniature(photo);
-
-            } catch (IOException e){
-                log.warning("Error processing photo: " + photo.getId());
-                return photo;
-            }
-        });
-    }
-
     private Photo resize(Photo photo, int scaledWidth, int scaledHeight)
             throws IOException {
 
