@@ -77,7 +77,11 @@ public class GalleryController {
     public void onSearchButtonClicked(ActionEvent actionEvent) {
         var photoDownloader = new PhotoDownloader();
         galleryModel.clear();
-        Disposable subscription = photoDownloader.searchForPhotos(searchTextField.getText())
+//        photoDownloader.searchForPhotos(searchTextField.getText()).subscribe(photo -> {
+//            galleryModel.addPhoto(photo);
+//        });
+
+        photoDownloader.searchForPhotos(searchTextField.getText())
                 .subscribeOn(Schedulers.io())
                 .observeOn(JavaFxScheduler.platform())
                 .subscribe(photo -> galleryModel.addPhoto(photo));
