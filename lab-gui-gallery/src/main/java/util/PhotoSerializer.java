@@ -34,7 +34,14 @@ public class PhotoSerializer {
         gallery.getPhotos().addListener(((ListChangeListener<Photo>) change -> {
             while (change.next()) {
                 if (change.wasAdded()) {
-                    change.getAddedSubList().forEach(this::savePhoto);
+                    change.getAddedSubList().forEach(photo -> {
+                        photo.nameProperty().addListener((observable, oldValue, newValue) -> {
+                            renamePhoto(oldValue, newValue);
+                            System.out.println("RENAME photo: " + oldValue + " to " + newValue);
+                        });
+                        savePhoto(photo);
+                        System.out.println("ADD photo: " + photo.getName());
+                    });
                 } else if (change.wasRemoved()) {
                     change.getRemoved().forEach(this::removePhoto);
                 }

@@ -21,7 +21,8 @@ public class Gallery {
 //    }
 
     public ObservableList<Photo> getPhotos() {
-        return FXCollections.observableList(photos);
+//        return FXCollections.observableList(photos);
+        return photos;
     }
 
     public void clear() {
