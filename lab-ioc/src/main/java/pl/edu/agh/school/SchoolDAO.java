@@ -3,7 +3,9 @@ package pl.edu.agh.school;
 import java.util.Collections;
 import java.util.List;
 
+import jakarta.inject.Inject;
 import pl.edu.agh.logger.Logger;
+import pl.edu.agh.school.persistence.IPersistenceManager;
 import pl.edu.agh.school.persistence.SerializablePersistenceManager;
 
 public class SchoolDAO {
@@ -14,18 +16,19 @@ public class SchoolDAO {
 
     private final List<SchoolClass> classes;
 
-    private final SerializablePersistenceManager manager;
+    private final IPersistenceManager persistenceManager;
 
+    @Inject
     public SchoolDAO() {
-        manager = new SerializablePersistenceManager();
-        teachers = manager.loadTeachers();
-        classes = manager.loadClasses();
+        this.persistenceManager = new SerializablePersistenceManager();
+        teachers = this.persistenceManager.loadTeachers();
+        classes = this.persistenceManager.loadClasses();
     }
 
     public void addTeacher(Teacher teacher) {
         if (!teachers.contains(teacher)) {
             teachers.add(teacher);
-            manager.saveTeachers(teachers);
+            this.persistenceManager.saveTeachers(teachers);
             log.log("Added " + teacher.toString());
         }
     }
@@ -33,7 +36,7 @@ public class SchoolDAO {
     public void addClass(SchoolClass newClass) {
         if (!classes.contains(newClass)) {
             classes.add(newClass);
-            manager.saveClasses(classes);
+            this.persistenceManager.saveClasses(classes);
             log.log("Added " + newClass.toString());
         }
     }
