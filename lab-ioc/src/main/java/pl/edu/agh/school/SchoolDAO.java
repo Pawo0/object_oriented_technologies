@@ -19,8 +19,8 @@ public class SchoolDAO {
     private final IPersistenceManager persistenceManager;
 
     @Inject
-    public SchoolDAO() {
-        this.persistenceManager = new SerializablePersistenceManager();
+    public SchoolDAO(IPersistenceManager persistenceManager) {
+        this.persistenceManager = persistenceManager;
         teachers = this.persistenceManager.loadTeachers();
         classes = this.persistenceManager.loadClasses();
     }
