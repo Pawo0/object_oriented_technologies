@@ -22,7 +22,7 @@ public class SchoolDemo {
 
     private final School school;
 
-    private final DateFormat timeFormat = new SimpleDateFormat("hh:mm");
+    private final DateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
     public SchoolDemo() {
         System.out.println(Charset.defaultCharset());

@@ -42,7 +42,7 @@ public class Term implements Serializable {
 
 	@Override
 	public String toString() {
-		DateFormat timeFormat = new SimpleDateFormat("hh:mm");
+		DateFormat timeFormat = new SimpleDateFormat("HH:mm");
 		return "term of " + subject + " on " + dayOfWeek + " at "
 				+ timeFormat.format(startTime) + ", " + durationInMinutes
 				+ " min";
