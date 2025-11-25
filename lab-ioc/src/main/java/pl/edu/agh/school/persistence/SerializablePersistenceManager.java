@@ -13,7 +13,8 @@ import pl.edu.agh.school.Teacher;
 
 public final class SerializablePersistenceManager implements IPersistenceManager{
 
-    private static final Logger log = Logger.getInstance();
+    @Inject
+    private  Logger log;
 
     private String teachersStorageFileName;
 
@@ -41,6 +42,7 @@ public final class SerializablePersistenceManager implements IPersistenceManager
         }
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(teachersStorageFileName))) {
             oos.writeObject(teachers);
+            log.log("Teachers data saved successfully");
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException(e);
         } catch (IOException e) {
@@ -54,8 +56,10 @@ public final class SerializablePersistenceManager implements IPersistenceManager
         try (ObjectInputStream ios = new ObjectInputStream(new FileInputStream(teachersStorageFileName))) {
 
             res = (ArrayList<Teacher>) ios.readObject();
+            log.log("Teachers data loaded successfully");
         } catch (FileNotFoundException e) {
             res = new ArrayList<>();
+            log.log("Teachers data file not found, starting with an empty list");
         } catch (IOException e) {
             log.log("There was an error while loading the teachers data", e);
         } catch (ClassNotFoundException e) {
@@ -71,6 +75,7 @@ public final class SerializablePersistenceManager implements IPersistenceManager
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(classStorageFileName))) {
 
             oos.writeObject(classes);
+            log.log("Classes data saved successfully");
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException(e);
         } catch (IOException e) {
@@ -83,8 +88,10 @@ public final class SerializablePersistenceManager implements IPersistenceManager
         ArrayList<SchoolClass> res = null;
         try (ObjectInputStream ios = new ObjectInputStream(new FileInputStream(classStorageFileName))) {
             res = (ArrayList<SchoolClass>) ios.readObject();
+            log.log("Classes data loaded successfully");
         } catch (FileNotFoundException e) {
             res = new ArrayList<>();
+            log.log("Classes data file not found, starting with an empty list");
         } catch (IOException e) {
             log.log("There was an error while loading the classes data", e);
         } catch (ClassNotFoundException e) {

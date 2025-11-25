@@ -1,5 +1,8 @@
 package pl.edu.agh.logger;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,8 +11,8 @@ import java.io.Writer;
 public class FileMessageSerializer implements IMessageSerializer {
     private final String filename;
 
-
-    public FileMessageSerializer(String filename) {
+    @Inject
+    public FileMessageSerializer(@Named("logFileName") String filename) {
         this.filename = filename;
     }
 

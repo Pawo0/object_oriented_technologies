@@ -1,11 +1,16 @@
 package pl.edu.agh.logger;
 
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+@Singleton
 public class Logger {
     protected static Logger logger;
 
@@ -18,13 +23,14 @@ public class Logger {
         this.registeredSerializers = new HashSet<IMessageSerializer>();
     }
 
-    public Logger(Set<IMessageSerializer> registeredSerializers) {
-        init();
-        if (registeredSerializers == null) {
-            throw new IllegalArgumentException("null argument");
-        }
-        this.registeredSerializers = registeredSerializers;
-    }
+//    @Inject
+//    public Logger(Set<IMessageSerializer> registeredSerializers) {
+//        init();
+//        if (registeredSerializers == null) {
+//            throw new IllegalArgumentException("null argument");
+//        }
+//        this.registeredSerializers = registeredSerializers;
+//    }
 
     public static Logger getInstance() {
         if (logger == null)
