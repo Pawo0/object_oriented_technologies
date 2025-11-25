@@ -1,9 +1,11 @@
 package pl.edu.agh.to.school.student;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import pl.edu.agh.to.school.grade.Grade;
 
 import java.time.LocalDate;
@@ -21,7 +23,9 @@ public class Student {
     private LocalDate birthDate;
     private String indexNumber;
 
-//    private List<Grade> grades = new ArrayList<>();;
+    @JsonIgnore
+    @OneToMany
+    private List<Grade> grades = new ArrayList<>();;
 
     public Student(String firstName, String lastName, LocalDate birthDate, String indexNumber) {
         this.firstName = firstName;
@@ -54,11 +58,11 @@ public class Student {
         return indexNumber;
     }
 
-//    public void giveGrade(Grade grade) {
-//        grades.add(grade);
-//    }
+    public void giveGrade(Grade grade) {
+        grades.add(grade);
+    }
 //
-//    public List<Grade> getGrades() {
-//        return grades;
-//    }
+    public List<Grade> getGrades() {
+        return grades;
+    }
 }

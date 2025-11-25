@@ -1,17 +1,25 @@
 package pl.edu.agh.to.school.course;
 
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import pl.edu.agh.to.school.student.Student;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Course {
 
+    @Id
+    @GeneratedValue
     private int id;
 
     private String name;
 
+    @OneToMany
     private List<Student> students;
 
     public Course() {}
